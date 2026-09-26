@@ -17,4 +17,14 @@ public static class BattleEngine
         { (PokemonType.Electric, PokemonType.Ground), 0.0 }, // No damage
         { (PokemonType.Ground, PokemonType.Flying), 0.0 }
     };
+
+    public static int CalculateDamage(Pokemon attacker, Movement movement, Pokemon defender)
+    {
+        if (!attacker.Movements.Any(m => m.Id == movement.Id || m.Name == movement.Name))
+        {
+            throw new ArgumentException($"Pokemon {attacker.Name} does not know the move {movement.Name}.");
+        }
+
+        throw new NotImplementedException("Damage calculation logic is not implemented yet.");
+    }
 }

@@ -25,6 +25,20 @@ public static class BattleEngine
             throw new ArgumentException($"Pokemon {attacker.Name} does not know the move {movement.Name}.");
         }
 
-        throw new NotImplementedException("Damage calculation logic is not implemented yet.");
+        int randomFactor = Random.Shared.Next(85, 101);
+
+        double effectiveness = GetEffectiveness(movement.Type, defender.Type);
+
+        double step1 = ((2.0 * attacker.Level) / 5.0) + 2.0;
+        double step2 = step1 * attacker.BaseAttack * movement.Power;
+        double step3 = step2 / defender.BaseDefense;
+        double step4 = (step3 / 50.0) * effectiveness * (randomFactor / 100.0);
+
+        return (int)Math.Floor(step4);
+    }
+
+    private static double GetEffectiveness(PokemonType type1, PokemonType type2)
+    {
+        throw new NotImplementedException();
     }
 }

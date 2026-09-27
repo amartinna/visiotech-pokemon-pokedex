@@ -26,4 +26,19 @@ public class PokedexController : ControllerBase
     {
         return await _context.Pokemons.ToListAsync();
     }
+
+    // GET: api/pokedex/pokemon/{id}
+    // Returns a single base Pokémon by its unique identifier
+    [HttpGet("pokemon/{id}")]
+    public async Task<ActionResult<PokemonModel>> GetPokemonById(int id)
+    {
+        var pokemon = await _context.Pokemons.FindAsync(id);
+
+        if (pokemon == null)
+        {
+            return NotFound($"Pokemon with ID {id} not found in the database.");
+        }
+
+        return Ok(pokemon);
+    }
 }

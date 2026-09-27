@@ -214,4 +214,26 @@ public class PokedexController : ControllerBase
 
         return Ok(myPokemon);
     }
+
+    // POST: api/pokedex/my-pokemon
+    // Captures or adds a Pokémon to your personal team by linking it to a base species
+    [HttpPost("my-pokemon")]
+    public async Task<ActionResult<UserPokemon>> CatchPokemon(UserPokemon myPokemon)
+    {
+        var baseSpecie = await _context.Pokemons.FindAsync(myPokemon.PokemonBaseId);
+        if (baseSpecie == null)
+        {
+            return BadRequest("The referenced PokemonBaseId does not exist.");
+        }
+
+        if (myPokemon.TrainedMovements.Count > 4)
+        {
+            return BadRequest("A captured Pokemon cannot start with more than 4 movements.");
+        }
+
+        _context.UserPokemons.Add(myPokemon);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetMyPokemonById), new { id = myPokemon.Id }, myPokemon);
+    }
 }

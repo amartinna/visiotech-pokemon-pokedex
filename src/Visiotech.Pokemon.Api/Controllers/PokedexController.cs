@@ -164,4 +164,21 @@ public class PokedexController : ControllerBase
 
         return NoContent();
     }
+
+    // DELETE: api/pokedex/movements/{id}
+    // Deletes a movement from the global dictionary by its unique identifier
+    [HttpDelete("movements/{id}")]
+    public async Task<IActionResult> DeleteMovement(int id)
+    {
+        var movement = await _context.Movements.FindAsync(id);
+        if (movement == null)
+        {
+            return NotFound($"Movement with ID {id} not found.");
+        }
+
+        _context.Movements.Remove(movement);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

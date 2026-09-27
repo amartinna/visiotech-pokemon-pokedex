@@ -236,4 +236,36 @@ public class PokedexController : ControllerBase
 
         return CreatedAtAction(nameof(GetMyPokemonById), new { id = myPokemon.Id }, myPokemon);
     }
+
+    // PUT: api/pokedex/my-pokemon/{id}/teach-move/{movementId}
+    // Teaches or modifies the trained movements of the Pokémon (Ensures the 4-move rule)
+    [HttpPut("my-pokemon/{id}/teach-move/{movementId}")]
+    public async Task<IActionResult> TeachMovement(int id, int movementId)
+    {
+        var myPokemon = await _context.UserPokemons
+            .Include(u => u.TrainedMovements)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        var movement = await _context.Movements.FindAsync(movementId);
+
+        if (myPokemon == null || movement == null)
+        {
+            return NotFound("Captured Pokemon or Movement not found in database.");
+        }
+
+        if (myPokemon.TrainedMovements.Count >= 4)
+        {
+            return BadRequest("Action denied. This Pokemon already has the maximum limit of 4 movements equipped.");
+        }
+
+        if (myPokemon.TrainedMovements.Any(m => m.Id == movementId))
+        {
+            return BadRequest("This Pokemon already knows the requested movement.");
+        }
+
+        myPokemon.TrainedMovements.Add(movement);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

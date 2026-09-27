@@ -183,7 +183,7 @@ public class PokedexController : ControllerBase
     }
 
     // =========================================================================
-    // 3. MIS POKEMONS WITH THEIR 4 MOVEMENTS (FULL CRUD)
+    // 3. USERPOKEMONS WITH THEIR 4 MOVEMENTS (FULL CRUD)
     // =========================================================================
 
     // GET: api/pokedex/my-pokemon
@@ -195,5 +195,23 @@ public class PokedexController : ControllerBase
             .Include(u => u.PokemonBase)
             .Include(u => u.TrainedMovements)
             .ToListAsync();
+    }
+
+    // GET: api/pokedex/my-pokemon/{id}
+    // Returns a single Pokémon from your personal team by its unique identifier, including its trained movements
+    [HttpGet("my-pokemon/{id}")]
+    public async Task<ActionResult<UserPokemon>> GetMyPokemonById(int id)
+    {
+        var myPokemon = await _context.UserPokemons
+            .Include(u => u.PokemonBase)
+            .Include(u => u.TrainedMovements)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (myPokemon == null)
+        {
+            return NotFound($"Captured Pokemon with ID {id} not found in your team.");
+        }
+
+        return Ok(myPokemon);
     }
 }

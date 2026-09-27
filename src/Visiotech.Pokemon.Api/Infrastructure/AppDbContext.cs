@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
 {
     public DbSet<PokemonModel> Pokemons => Set<PokemonModel>();
     public DbSet<Movement> Movements => Set<Movement>();
+    public DbSet<UserPokemon> UserPokemons => Set<UserPokemon>();
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -41,5 +42,7 @@ public class AppDbContext : DbContext
                 BaseSpecialAttack = 109, BaseSpecialDefense = 85, BaseSpeed = 100 
             }
         );
+
+        modelBuilder.Entity<UserPokemon>().HasMany(u => u.TrainedMovements).WithMany();
     }
 }

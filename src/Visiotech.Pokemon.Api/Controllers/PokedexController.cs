@@ -181,4 +181,19 @@ public class PokedexController : ControllerBase
 
         return NoContent();
     }
+
+    // =========================================================================
+    // 3. MIS POKEMONS WITH THEIR 4 MOVEMENTS (FULL CRUD)
+    // =========================================================================
+
+    // GET: api/pokedex/my-pokemon
+    // Returns the list of your personal team or collection of captured Pokémons with their movements
+    [HttpGet("my-pokemon")]
+    public async Task<ActionResult<IEnumerable<UserPokemon>>> GetMyPokemons()
+    {
+        return await _context.UserPokemons
+            .Include(u => u.PokemonBase)
+            .Include(u => u.TrainedMovements)
+            .ToListAsync();
+    }
 }

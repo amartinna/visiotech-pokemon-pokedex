@@ -52,4 +52,32 @@ public class PokedexController : ControllerBase
         
         return CreatedAtAction(nameof(GetPokemonById), new { id = pokemon.Id }, pokemon);
     }
+
+    // PUT: api/pokedex/pokemon/{id}
+    // Updates the statistics or data of an existing Pokémon
+    [HttpPut("pokemon/{id}")]
+    public async Task<IActionResult> UpdatePokemon(int id, PokemonModel pokemon)
+    {
+        if (id != pokemon.Id)
+        {
+            return BadRequest("The URL ID parameter does not match the body entity ID.");
+        }
+
+        _context.Entry(pokemon).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Pokemons.AnyAsync(p => p.Id == id))
+            {
+                return NotFound($"Pokemon with ID {id} no longer exists.");
+            }
+            throw;
+        }
+
+        return NoContent();
+    }
 }

@@ -136,4 +136,32 @@ public class PokedexController : ControllerBase
 
         return CreatedAtAction(nameof(GetMovementById), new { id = movement.Id }, movement);
     }
+
+    // PUT: api/pokedex/movements/{id}
+    // Updates the parameters or power of an existing movement
+    [HttpPut("movements/{id}")]
+    public async Task<IActionResult> UpdateMovement(int id, Movement movement)
+    {
+        if (id != movement.Id)
+        {
+            return BadRequest("The parameter ID does not match the entity ID.");
+        }
+
+        _context.Entry(movement).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Movements.AnyAsync(m => m.Id == id))
+            {
+                return NotFound($"Movement with ID {id} does not exist.");
+            }
+            throw;
+        }
+
+        return NoContent();
+    }
 }

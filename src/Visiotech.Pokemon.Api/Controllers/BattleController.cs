@@ -107,6 +107,14 @@ public class BattleController : ControllerBase
 
     private int ExecuteTurn(PokemonModel attacker, Movement move, PokemonModel defender, int defenderCurrentHp, string attackerName, List<string> log)
     {
-        throw new NotImplementedException();
+        int damage = BattleEngine.CalculateDamage(attacker, move, defender);
+        int newHp = Math.Max(0, defenderCurrentHp - damage);
+
+        double effectiveness = BattleEngine.GetEffectiveness(move.Type, defender.Type);
+        string effectivenessComment = effectiveness > 1.0 ? "It's super effective!" : effectiveness == 0.0 ? "It had no effect..." : "";
+
+        log.Add($"{attackerName}'s {attacker.Name} uses {move.Name} dealing {damage} HP damage. {effectivenessComment} (Target HP left: {newHp})");
+        
+        return newHp;
     }
 }

@@ -37,7 +37,7 @@ public static class BattleEngine
         return (int)Math.Floor(step4);
     }
 
-    private static double GetEffectiveness(PokemonType attackType, PokemonType defenderType)
+    public static double GetEffectiveness(PokemonType attackType, PokemonType defenderType)
     {
         if (TypeEffectiveness.TryGetValue((attackType, defenderType), out var factor))
         {

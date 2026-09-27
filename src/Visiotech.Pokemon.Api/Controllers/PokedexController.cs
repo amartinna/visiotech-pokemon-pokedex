@@ -125,4 +125,15 @@ public class PokedexController : ControllerBase
 
         return Ok(movement);
     }
+
+    // POST: api/pokedex/movements
+    // Creates a new movement in the system (includes its elemental type)
+    [HttpPost("movements")]
+    public async Task<ActionResult<Movement>> CreateMovement(Movement movement)
+    {
+        _context.Movements.Add(movement);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetMovementById), new { id = movement.Id }, movement);
+    }
 }

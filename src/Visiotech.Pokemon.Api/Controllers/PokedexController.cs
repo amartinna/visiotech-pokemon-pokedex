@@ -110,4 +110,19 @@ public class PokedexController : ControllerBase
     {
         return await _context.Movements.ToListAsync();
     }
+
+    // GET: api/pokedex/movements/{id}
+    // Returns a single movement by its unique identifier
+    [HttpGet("movements/{id}")]
+    public async Task<ActionResult<Movement>> GetMovementById(int id)
+    {
+        var movement = await _context.Movements.FindAsync(id);
+
+        if (movement == null)
+        {
+            return NotFound($"Movement with ID {id} not found.");
+        }
+
+        return Ok(movement);
+    }
 }

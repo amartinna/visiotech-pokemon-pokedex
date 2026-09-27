@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Visiotech.Pokemon.Api.Domain;
 using Visiotech.Pokemon.Api.Infrastructure;
 using PokemonModel = Visiotech.Pokemon.Api.Domain.Pokemon;
 
@@ -96,5 +97,17 @@ public class PokedexController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // =========================================================================
+    // 2. MOVEMENTS (FULL CRUD)
+    // =========================================================================
+
+    // GET: api/pokedex/movements
+    // Returns the complete dictionary of available moves in the database
+    [HttpGet("movements")]
+    public async Task<ActionResult<IEnumerable<Movement>>> GetMovements()
+    {
+        return await _context.Movements.ToListAsync();
     }
 }

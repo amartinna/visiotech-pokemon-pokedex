@@ -268,4 +268,21 @@ public class PokedexController : ControllerBase
 
         return NoContent();
     }
+
+    // DELETE: api/pokedex/my-pokemon/{id}
+    // Releases or removes a Pokémon from your personal team
+    [HttpDelete("my-pokemon/{id}")]
+    public async Task<IActionResult> ReleasePokemon(int id)
+    {
+        var myPokemon = await _context.UserPokemons.FindAsync(id);
+        if (myPokemon == null)
+        {
+            return NotFound($"Captured Pokemon with ID {id} not found in your team.");
+        }
+
+        _context.UserPokemons.Remove(myPokemon);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

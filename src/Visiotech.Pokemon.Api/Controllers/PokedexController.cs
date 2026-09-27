@@ -41,4 +41,15 @@ public class PokedexController : ControllerBase
 
         return Ok(pokemon);
     }
+
+    // POST: api/pokedex/pokemon
+    // Inserts a new base Pokémon record into the Pokedex
+    [HttpPost("pokemon")]
+    public async Task<ActionResult<PokemonModel>> CreatePokemon(PokemonModel pokemon)
+    {
+        _context.Pokemons.Add(pokemon);
+        await _context.SaveChangesAsync();
+        
+        return CreatedAtAction(nameof(GetPokemonById), new { id = pokemon.Id }, pokemon);
+    }
 }

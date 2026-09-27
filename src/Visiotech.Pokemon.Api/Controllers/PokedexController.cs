@@ -307,4 +307,48 @@ public class PokedexController : ControllerBase
         // Assigned movements
         return Ok(pokemon.Movements);
     }
+
+    // =========================================================================
+    // ADVANCED QUERIES TO GET POSSIBLE MOVEMENTS FOR A POKEMON (USER OR BASE) BASED ON ITS ELEMENTAL TYPE
+    // =========================================================================
+
+    // GET: api/pokedex/pokemon/{id}/possible-moves
+    // Returns the movements from the dictionary that match the elemental type of the base Pokemon
+    [HttpGet("pokemon/{id}/possible-moves")]
+    public async Task<ActionResult<IEnumerable<Movement>>> GetPossibleMovementsForBase(int id)
+    {
+        var basePokemon = await _context.Pokemons.FindAsync(id);
+        if (basePokemon == null)
+        {
+            return NotFound($"Base Pokemon with ID {id} not found.");
+        }
+
+        // Relación estricta: movimiento -> tipo -> Pokémon
+        var possibleMovements = await _context.Movements
+            .Where(m => m.Type == basePokemon.Type)
+            .ToListAsync();
+
+        return Ok(possibleMovements);
+    }
+
+    // GET: api/pokedex/my-pokemon/{id}/possible-moves
+    // Returns the movements from the dictionary that match the elemental type of a captured Pokemon in your team
+    [HttpGet("my-pokemon/{id}/possible-moves")]
+    public async Task<ActionResult<IEnumerable<Movement>>> GetPossibleMovementsForCaptured(int id)
+    {
+        var myPokemon = await _context.UserPokemons
+            .Include(u => u.PokemonBase)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (myPokemon == null || myPokemon.PokemonBase == null)
+        {
+            return NotFound($"Captured Pokemon with ID {id} not found.");
+        }
+
+        var possibleMovements = await _context.Movements
+            .Where(m => m.Type == myPokemon.PokemonBase.Type)
+            .ToListAsync();
+
+        return Ok(possibleMovements);
+    }
 }

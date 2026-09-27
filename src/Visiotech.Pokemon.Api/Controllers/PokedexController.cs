@@ -323,7 +323,7 @@ public class PokedexController : ControllerBase
             return NotFound($"Base Pokemon with ID {id} not found.");
         }
 
-        // Relación estricta: movimiento -> tipo -> Pokémon
+        // Relación estricta: movimiento -> tipo -> Pokemon
         var possibleMovements = await _context.Movements
             .Where(m => m.Type == basePokemon.Type)
             .ToListAsync();
@@ -350,5 +350,40 @@ public class PokedexController : ControllerBase
             .ToListAsync();
 
         return Ok(possibleMovements);
+    }
+
+    // =========================================================================
+    // ADVANCED QUERY TO GET POKEMONS THAT SHARE A SPECIFIC MOVEMENT (BASE OR CAPTURED)
+    // =========================================================================
+
+
+    // GET: api/pokedex/movements/{movementId}/shared-by
+    // Returns the filtered lists of who shares the movement (Base Species or User Team)
+    [HttpGet("movements/{movementId}/shared-by")]
+    public async Task<IActionResult> GetPokemonsSharingMovement(int movementId, [FromQuery] string target = "my-team")
+    {
+        var movementExists = await _context.Movements.AnyAsync(m => m.Id == movementId);
+        if (!movementExists)
+        {
+            return NotFound($"Movement with ID {movementId} does not exist.");
+        }
+
+        if (target.ToLower() == "base")
+        {
+            // Lista los pokemon de las especies base que tienen este movimiento asignado
+            var basePokemons = await _context.Pokemons
+                .Where(p => p.Movements.Any(m => m.Id == movementId))
+                .ToListAsync();
+            return Ok(basePokemons);
+        }
+
+        // Por defecto, lista los Pokemon del equipo del usuario que tienen este movimiento entrenado
+        var myTrainedPokemons = await _context.UserPokemons
+            .Include(u => u.PokemonBase)
+            .Include(u => u.TrainedMovements)
+            .Where(u => u.TrainedMovements.Any(m => m.Id == movementId))
+            .ToListAsync();
+
+        return Ok(myTrainedPokemons);
     }
 }

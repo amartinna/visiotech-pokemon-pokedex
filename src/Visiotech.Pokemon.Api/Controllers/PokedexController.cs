@@ -80,4 +80,21 @@ public class PokedexController : ControllerBase
 
         return NoContent();
     }
+
+    // DELETE: api/pokedex/pokemon/{id}
+    // Deletes a Pokémon from the Pokedex by its unique identifier
+    [HttpDelete("pokemon/{id}")]
+    public async Task<IActionResult> DeletePokemon(int id)
+    {
+        var pokemon = await _context.Pokemons.FindAsync(id);
+        if (pokemon == null)
+        {
+            return NotFound($"Pokemon with ID {id} not found.");
+        }
+
+        _context.Pokemons.Remove(pokemon);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

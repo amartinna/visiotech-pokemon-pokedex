@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  pokemon-api:
+    image: visiotech-pokemon-api:latest
+    container_name: visiotech_pokemon_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5200:8080"
+    volumes:
+      - pokemon-data:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: always
+
+volumes:
+  pokemon-data:

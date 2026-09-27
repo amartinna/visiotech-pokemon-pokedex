@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FA6553A2-85D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visiotech.Pokemon.Api", "src\Visiotech.Pokemon.Api\Visiotech.Pokemon.Api.csproj", "{F38E169D-AC6A-49E2-8898-902C070B0369}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4DFED3D0-7F93-4555-9887-DE8C94FF71B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visiotech.Pokemon.UnitTests", "tests\Visiotech.Pokemon.UnitTests\Visiotech.Pokemon.UnitTests.csproj", "{B96E3731-DE48-4716-B6B5-DA015BD7B94A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{F38E169D-AC6A-49E2-8898-902C070B0369}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F38E169D-AC6A-49E2-8898-902C070B0369}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F38E169D-AC6A-49E2-8898-902C070B0369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96E3731-DE48-4716-B6B5-DA015BD7B94A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96E3731-DE48-4716-B6B5-DA015BD7B94A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96E3731-DE48-4716-B6B5-DA015BD7B94A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96E3731-DE48-4716-B6B5-DA015BD7B94A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F38E169D-AC6A-49E2-8898-902C070B0369} = {FA6553A2-85DC-4838-8B5B-035FFCC6A886}
+		{B96E3731-DE48-4716-B6B5-DA015BD7B94A} = {4DFED3D0-7F93-4555-9887-DE8C94FF71B1}
 	EndGlobalSection
 EndGlobal

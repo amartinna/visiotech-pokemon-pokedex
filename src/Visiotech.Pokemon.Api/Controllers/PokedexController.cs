@@ -29,7 +29,7 @@ public class PokedexController : ControllerBase
     }
 
     // GET: api/pokedex/pokemon/{id}
-    // Returns a single base Pokémon by its unique identifier
+    // Returns a single base Pokemon by its unique identifier
     [HttpGet("pokemon/{id}")]
     public async Task<ActionResult<PokemonModel>> GetPokemonById(int id)
     {
@@ -44,7 +44,7 @@ public class PokedexController : ControllerBase
     }
 
     // POST: api/pokedex/pokemon
-    // Inserts a new base Pokémon record into the Pokedex
+    // Inserts a new base Pokemon record into the Pokedex
     [HttpPost("pokemon")]
     public async Task<ActionResult<PokemonModel>> CreatePokemon(PokemonModel pokemon)
     {
@@ -55,7 +55,7 @@ public class PokedexController : ControllerBase
     }
 
     // PUT: api/pokedex/pokemon/{id}
-    // Updates the statistics or data of an existing Pokémon
+    // Updates the statistics or data of an existing Pokemon
     [HttpPut("pokemon/{id}")]
     public async Task<IActionResult> UpdatePokemon(int id, PokemonModel pokemon)
     {
@@ -83,7 +83,7 @@ public class PokedexController : ControllerBase
     }
 
     // DELETE: api/pokedex/pokemon/{id}
-    // Deletes a Pokémon from the Pokedex by its unique identifier
+    // Deletes a Pokemon from the Pokedex by its unique identifier
     [HttpDelete("pokemon/{id}")]
     public async Task<IActionResult> DeletePokemon(int id)
     {
@@ -187,7 +187,7 @@ public class PokedexController : ControllerBase
     // =========================================================================
 
     // GET: api/pokedex/my-pokemon
-    // Returns the list of your personal team or collection of captured Pokémons with their movements
+    // Returns the list of your personal team or collection of captured Pokemons with their movements
     [HttpGet("my-pokemon")]
     public async Task<ActionResult<IEnumerable<UserPokemon>>> GetMyPokemons()
     {
@@ -198,7 +198,7 @@ public class PokedexController : ControllerBase
     }
 
     // GET: api/pokedex/my-pokemon/{id}
-    // Returns a single Pokémon from your personal team by its unique identifier, including its trained movements
+    // Returns a single Pokemon from your personal team by its unique identifier, including its trained movements
     [HttpGet("my-pokemon/{id}")]
     public async Task<ActionResult<UserPokemon>> GetMyPokemonById(int id)
     {
@@ -216,7 +216,7 @@ public class PokedexController : ControllerBase
     }
 
     // POST: api/pokedex/my-pokemon
-    // Captures or adds a Pokémon to your personal team by linking it to a base species
+    // Captures or adds a Pokemon to your personal team by linking it to a base species
     [HttpPost("my-pokemon")]
     public async Task<ActionResult<UserPokemon>> CatchPokemon(UserPokemon myPokemon)
     {
@@ -238,7 +238,7 @@ public class PokedexController : ControllerBase
     }
 
     // PUT: api/pokedex/my-pokemon/{id}/teach-move/{movementId}
-    // Teaches or modifies the trained movements of the Pokémon (Ensures the 4-move rule)
+    // Teaches or modifies the trained movements of the Pokemon (Ensures the 4-move rule)
     [HttpPut("my-pokemon/{id}/teach-move/{movementId}")]
     public async Task<IActionResult> TeachMovement(int id, int movementId)
     {
@@ -270,7 +270,7 @@ public class PokedexController : ControllerBase
     }
 
     // DELETE: api/pokedex/my-pokemon/{id}
-    // Releases or removes a Pokémon from your personal team
+    // Releases or removes a Pokemon from your personal team
     [HttpDelete("my-pokemon/{id}")]
     public async Task<IActionResult> ReleasePokemon(int id)
     {
@@ -284,5 +284,27 @@ public class PokedexController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // =========================================================================
+    // INTERMEDIATE CROSS-QUERY (Relación: movimientos -> tipo -> Pokemon)
+    // =========================================================================
+
+    // GET: api/pokedex/pokemon/{id}/movements
+    // Returns the list of movements assigned to a specific Pokemon by its unique identifier
+    [HttpGet("pokemon/{id}/movements")]
+    public async Task<ActionResult<IEnumerable<Movement>>> GetPokemonMovements(int id)
+    {
+        var pokemon = await _context.Pokemons
+            .Include(p => p.Movements)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (pokemon == null)
+        {
+            return NotFound($"Pokemon with ID {id} not found.");
+        }
+
+        // Assigned movements
+        return Ok(pokemon.Movements);
     }
 }
